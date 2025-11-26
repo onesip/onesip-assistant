@@ -1,7 +1,7 @@
 
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { Product, WikiItem, Announcement } from '../types';
-import { Lock, Plus, Edit, X, RefreshCw } from 'lucide-react';
+import { Lock, Plus, Edit, X, Upload, FileText } from 'lucide-react';
 
 interface StaffDashboardProps {
     menuItems: Product[];
@@ -12,7 +12,7 @@ interface StaffDashboardProps {
     updateWiki: (id: string, data: any) => void;
     addWiki: (data: any) => void;
     updateAnnouncement: (data: any) => void;
-    onSyncData: () => void;
+    onSyncData: (csvText: string) => void;
     onExit: () => void;
 }
 
@@ -130,9 +130,34 @@ const StaffDashboard: React.FC<StaffDashboardProps> = ({ menuItems, wikiItems, a
     const [activeTab, setActiveTab] = useState('menu');
     const [editingItem, setEditingItem] = useState<any>(null);
     const [editingWiki, setEditingWiki] = useState<any>(null);
+    const fileInputRef = useRef<HTMLInputElement>(null);
+
+    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (!file) return;
+
+        const reader = new FileReader();
+        reader.onload = (event) => {
+            const csvText = event.target?.result as string;
+            if (csvText) {
+                onSyncData(csvText);
+            }
+        };
+        reader.readAsText(file);
+        // Reset input so you can upload the same file again if needed
+        e.target.value = '';
+    };
 
     return (
         <div className="h-screen w-full flex flex-col bg-stone-50 font-sans animate-slide-up">
+            <input 
+                type="file" 
+                ref={fileInputRef} 
+                onChange={handleFileChange} 
+                accept=".csv" 
+                className="hidden" 
+            />
+            
             {editingItem && (
                 <EditProductModal 
                     item={editingItem === 'new' ? null : editingItem} 
@@ -157,8 +182,8 @@ const StaffDashboard: React.FC<StaffDashboardProps> = ({ menuItems, wikiItems, a
                 <div className="flex justify-between items-center mb-4">
                     <h2 className="font-black text-xl text-stone-800 flex items-center gap-2"><Lock size={20} className="text-emerald-600"/> Dashboard</h2>
                     <div className="flex gap-2">
-                         <button onClick={onSyncData} className="text-xs font-bold text-blue-600 bg-blue-100 hover:bg-blue-200 px-3 py-1.5 rounded-full flex items-center gap-1 transition-colors">
-                            <RefreshCw size={12} /> Sync Data
+                         <button onClick={() => fileInputRef.current?.click()} className="text-xs font-bold text-blue-600 bg-blue-100 hover:bg-blue-200 px-3 py-1.5 rounded-full flex items-center gap-1 transition-colors">
+                            <Upload size={12} /> Import CSV
                         </button>
                         <button onClick={onExit} className="text-xs font-bold text-stone-500 bg-stone-100 hover:bg-stone-200 px-3 py-1.5 rounded-full transition-colors">Exit</button>
                     </div>

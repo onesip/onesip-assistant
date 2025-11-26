@@ -112,6 +112,20 @@ const App: React.FC = () => {
         } catch(e) { console.error("Add item failed", e); }
     };
 
+    const deleteItem = async (id: string) => {
+        if (!fbModules) { alert("Firebase not connected."); return; }
+        if (!window.confirm("Are you sure you want to delete this product?")) return;
+        
+        const { db, doc, deleteDoc } = fbModules;
+        const appId = 'onesip-default';
+        try {
+            await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'menu', id));
+        } catch(e) { 
+            console.error("Delete item failed", e); 
+            alert("Failed to delete.");
+        }
+    };
+
     const updateWiki = async (id: string, data: any) => {
         if (!fbModules) return;
         const { db, doc, updateDoc } = fbModules;
@@ -128,6 +142,20 @@ const App: React.FC = () => {
         try {
             await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'wiki', data.id), data);
         } catch(e) { console.error("Add wiki failed", e); }
+    };
+
+    const deleteWiki = async (id: string) => {
+        if (!fbModules) { alert("Firebase not connected."); return; }
+        if (!window.confirm("Are you sure you want to delete this ingredient?")) return;
+        
+        const { db, doc, deleteDoc } = fbModules;
+        const appId = 'onesip-default';
+        try {
+            await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'wiki', id));
+        } catch(e) { 
+            console.error("Delete wiki failed", e); 
+            alert("Failed to delete.");
+        }
     };
 
     const updateAnnouncement = async (data: any) => {
@@ -512,7 +540,7 @@ const App: React.FC = () => {
         return (
             <StaffDashboard 
                 menuItems={menuItems} wikiItems={wikiItems} announcementData={announcement} 
-                updateItem={updateItem} addItem={addItem} updateWiki={updateWiki} addWiki={addWiki} updateAnnouncement={updateAnnouncement} 
+                updateItem={updateItem} addItem={addItem} deleteItem={deleteItem} updateWiki={updateWiki} addWiki={addWiki} deleteWiki={deleteWiki} updateAnnouncement={updateAnnouncement} 
                 onSyncData={parseAndSyncCSV}
                 onSyncWiki={parseAndSyncWikiCSV}
                 onExit={() => { setView('chat'); setStaffPassword(''); }} 

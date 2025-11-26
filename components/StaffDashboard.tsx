@@ -1,7 +1,8 @@
 
+
 import React, { useState, useRef } from 'react';
 import { Product, WikiItem, Announcement } from '../types';
-import { Lock, Plus, Edit, X, Upload, FileText, Link as LinkIcon, Check } from 'lucide-react';
+import { Lock, Plus, Edit, X, Upload, FileText, Link as LinkIcon, Check, Trash2 } from 'lucide-react';
 
 interface StaffDashboardProps {
     menuItems: Product[];
@@ -9,8 +10,10 @@ interface StaffDashboardProps {
     announcementData: Announcement;
     updateItem: (id: string, data: any) => void;
     addItem: (data: any) => void;
+    deleteItem: (id: string) => void;
     updateWiki: (id: string, data: any) => void;
     addWiki: (data: any) => void;
+    deleteWiki: (id: string) => void;
     updateAnnouncement: (data: any) => void;
     onSyncData: (csvText: string) => void;
     onSyncWiki: (csvText: string) => void;
@@ -174,7 +177,7 @@ const AnnouncementManager = ({ data, onSave }: { data: Announcement, onSave: (d:
     );
 };
 
-const StaffDashboard: React.FC<StaffDashboardProps> = ({ menuItems, wikiItems, announcementData, updateItem, addItem, updateWiki, addWiki, updateAnnouncement, onSyncData, onSyncWiki, onExit }) => {
+const StaffDashboard: React.FC<StaffDashboardProps> = ({ menuItems, wikiItems, announcementData, updateItem, addItem, deleteItem, updateWiki, addWiki, deleteWiki, updateAnnouncement, onSyncData, onSyncWiki, onExit }) => {
     const [activeTab, setActiveTab] = useState('menu');
     const [editingItem, setEditingItem] = useState<any>(null);
     const [editingWiki, setEditingWiki] = useState<any>(null);
@@ -201,7 +204,7 @@ const StaffDashboard: React.FC<StaffDashboardProps> = ({ menuItems, wikiItems, a
     };
 
     return (
-        <div className="h-screen w-full flex flex-col bg-stone-50 font-sans animate-slide-up">
+        <div className="h-[100dvh] w-full flex flex-col bg-stone-50 font-sans animate-slide-up">
             <input 
                 type="file" 
                 ref={fileInputRef} 
@@ -262,7 +265,10 @@ const StaffDashboard: React.FC<StaffDashboardProps> = ({ menuItems, wikiItems, a
                                             <h4 className="font-bold text-sm truncate">{item.nameCN}</h4>
                                         </div>
                                     </div>
-                                    <button onClick={() => setEditingItem(item)} className="p-2 bg-stone-50 rounded-lg text-stone-500 hover:bg-emerald-100 hover:text-emerald-600"><Edit size={16}/></button>
+                                    <div className="flex gap-2 shrink-0">
+                                        <button onClick={() => setEditingItem(item)} className="p-2 bg-stone-50 rounded-lg text-stone-500 hover:bg-emerald-100 hover:text-emerald-600"><Edit size={16}/></button>
+                                        <button onClick={() => deleteItem(item.id)} className="p-2 bg-stone-50 rounded-lg text-stone-500 hover:bg-red-100 hover:text-red-600"><Trash2 size={16}/></button>
+                                    </div>
                                 </div>
                             ))}
                         </div>
@@ -274,11 +280,14 @@ const StaffDashboard: React.FC<StaffDashboardProps> = ({ menuItems, wikiItems, a
                         <div className="space-y-3">
                             {wikiItems.map(item => (
                                 <div key={item.id} className="bg-white p-3 rounded-xl border border-stone-100 shadow-sm flex justify-between items-center">
-                                    <div>
-                                        <h4 className="font-bold text-stone-800 text-sm">{item.nameCN}</h4>
-                                        <p className="text-xs text-stone-400">{item.nameEN}</p>
+                                    <div className="flex-1 mr-2">
+                                        <h4 className="font-bold text-stone-800 text-sm truncate">{item.nameCN}</h4>
+                                        <p className="text-xs text-stone-400 truncate">{item.nameEN}</p>
                                     </div>
-                                    <button onClick={() => setEditingWiki(item)} className="p-2 bg-stone-50 rounded-lg text-stone-500 hover:bg-amber-100 hover:text-amber-600"><Edit size={16}/></button>
+                                    <div className="flex gap-2 shrink-0">
+                                        <button onClick={() => setEditingWiki(item)} className="p-2 bg-stone-50 rounded-lg text-stone-500 hover:bg-amber-100 hover:text-amber-600"><Edit size={16}/></button>
+                                        <button onClick={() => deleteWiki(item.id)} className="p-2 bg-stone-50 rounded-lg text-stone-500 hover:bg-red-100 hover:text-red-600"><Trash2 size={16}/></button>
+                                    </div>
                                 </div>
                             ))}
                         </div>

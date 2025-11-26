@@ -139,33 +139,109 @@ const App: React.FC = () => {
         } catch(e) { console.error("Update promo failed", e); }
     };
 
-    // --- RESEED / FORCE SYNC FUNCTION ---
-    const reseedDatabase = async () => {
-        if (!fbModules) {
-            alert("Firebase not connected.");
-            return;
-        }
+    // --- CSV INTELLIGENT PARSER & SYNC ---
+    const parseAndSyncCSV = async (csvText: string) => {
+        if (!fbModules) { alert("Firebase not connected."); return; }
         const { db, doc, setDoc } = fbModules;
         const appId = 'onesip-default';
 
-        if (window.confirm("CONFIRM SYNC: This will overwrite all cloud data with the latest code version. Are you sure?")) {
-            try {
-                // Sync Menu
-                for (const item of INITIAL_MENU_DATA) {
-                    await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'menu', item.id), item);
-                }
-                // Sync Wiki
-                for (const item of INITIAL_WIKI_DATA) {
-                    await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'wiki', item.id), item);
-                }
-                // Sync Promo
-                await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'promotion', 'main'), INITIAL_ANNOUNCEMENT_DATA);
+        if (!window.confirm("CONFIRM IMPORT: This will analyze your CSV and overwrite the database. Proceed?")) return;
+
+        try {
+            const lines = csvText.split(/\r?\n/).filter(l => l.trim() !== '');
+            const parsedItems: Product[] = [];
+            
+            // Skip header (Row 0)
+            for (let i = 1; i < lines.length; i++) {
+                // Simple CSV splitter, assuming no commas within fields for this specific use case
+                // or fields are clean. For better robustness, a library is usually preferred,
+                // but we'll use a smart split here.
+                const cols = lines[i].split(',');
+                if (cols.length < 5) continue; // Skip invalid rows
+
+                const rawName = cols[0].trim();
+                const rawCategory = cols[1]?.toLowerCase() || '';
+                const rawStatus = cols[2]?.trim() || '';
+                const rawPrice = cols[6]?.trim() || '5';
+                const rawTags = cols[7]?.toLowerCase() || '';
+                const rawSugar = cols[9]?.trim() || '';
+                const rawKeywords = cols[10]?.trim() || '';
+                const rawIngred = cols[11]?.trim() || '';
+
+                // 1. Intelligent Name Split (EN vs CN)
+                // Find first Chinese character
+                const cnMatch = rawName.match(/[\u4e00-\u9fa5]/);
+                let nameEN = rawName;
+                let nameCN = rawName;
                 
-                alert("✅ Success! Database synced with latest code data.");
-            } catch (e) {
-                console.error("Sync failed", e);
-                alert("❌ Sync failed. Check console for details.");
+                if (cnMatch && cnMatch.index) {
+                    nameEN = rawName.substring(0, cnMatch.index).trim();
+                    nameCN = rawName.substring(cnMatch.index).trim();
+                }
+
+                // 2. Generate Deterministic ID
+                const id = nameEN.toLowerCase().replace(/[^a-z0-9]/g, '-').replace(/-+/g, '-').replace(/^-|-$/g, '') || `item_${i}`;
+
+                // 3. Map Status
+                let status: any = 'active';
+                if (rawStatus.includes('新品')) status = 'new';
+                if (rawStatus.includes('下架') || rawStatus.includes('未上架')) status = 'inactive';
+                if (rawStatus.includes('n')) status = 'inactive'; // Handle 'n' from csv
+
+                // 4. Map Type & SubType
+                let type: any = 'milk';
+                let subType = 'classic';
+                
+                if (rawCategory.includes('coffee')) { type = 'coffee'; subType = 'rich'; }
+                else if (rawCategory.includes('matcha')) { type = 'matcha'; subType = 'classic'; }
+                else if (rawCategory.includes('fruit')) { type = 'fruit'; subType = 'sweet'; }
+
+                // Refine SubType
+                if (rawCategory.includes('养生') || rawKeywords.includes('养生')) subType = 'healthy';
+                if (rawCategory.includes('cheese') || rawName.toLowerCase().includes('cheezo') || rawName.includes('芝芝')) subType = 'cheese';
+                if (rawCategory.includes('oat') || rawName.toLowerCase().includes('oat')) subType = 'plant';
+                if (rawCategory.includes('salt') || rawName.includes('咸')) subType = 'rich';
+
+                // 5. Parse Tags
+                const tags: string[] = [];
+                if (rawTags.includes('cold')) tags.push('cold');
+                if (rawTags.includes('warm') || rawTags.includes('hot')) tags.push('hot');
+                if (cols[3]?.trim() === 'N' || rawName.toLowerCase().includes('no caffeine')) tags.push('no-caffeine');
+
+                // 6. Clean Price
+                const price = parseFloat(rawPrice.replace(/[^0-9.]/g, '')) || 5.0;
+
+                const newItem: Product = {
+                    id,
+                    status,
+                    nameCN,
+                    nameEN,
+                    price,
+                    type,
+                    subType,
+                    tags,
+                    keywords: rawKeywords,
+                    descCN: rawIngred,
+                    descEN: nameEN, // Fallback if no specific EN desc in CSV
+                    sugarGuideCN: rawSugar,
+                    sugarGuideEN: rawSugar.includes('Fixed') ? 'Fixed Sugar' : 'Recommend 30% or 0%.'
+                };
+                
+                parsedItems.push(newItem);
             }
+
+            console.log(`Parsed ${parsedItems.length} items. Uploading...`);
+            
+            // Batch upload
+            for (const item of parsedItems) {
+                await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'menu', item.id), item);
+            }
+
+            alert(`✅ Successfully imported ${parsedItems.length} items!`);
+
+        } catch (e) {
+            console.error("CSV Parse Error", e);
+            alert("❌ Failed to parse CSV. Please ensure format matches standard.");
         }
     };
 
@@ -357,7 +433,7 @@ const App: React.FC = () => {
             <StaffDashboard 
                 menuItems={menuItems} wikiItems={wikiItems} announcementData={announcement} 
                 updateItem={updateItem} addItem={addItem} updateWiki={updateWiki} addWiki={addWiki} updateAnnouncement={updateAnnouncement} 
-                onSyncData={reseedDatabase}
+                onSyncData={parseAndSyncCSV}
                 onExit={() => { setView('chat'); setStaffPassword(''); }} 
             />
         );

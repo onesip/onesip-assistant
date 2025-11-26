@@ -1,16 +1,24 @@
+
 import React from 'react';
-import { Product, Language } from '../types';
-import { ChevronLeft, Coffee, Droplet, Leaf } from 'lucide-react';
+import { Product, Language, WikiItem } from '../types';
+import { ChevronLeft, Coffee, Droplet, Leaf, Info } from 'lucide-react';
 
 interface ProductDetailProps {
     product: Product;
     onClose: () => void;
     lang: Language;
     t: any;
+    wikiItems?: WikiItem[];
 }
 
-const ProductDetailModal: React.FC<ProductDetailProps> = ({ product, onClose, lang, t }) => {
+const ProductDetailModal: React.FC<ProductDetailProps> = ({ product, onClose, lang, t, wikiItems = [] }) => {
     const detailData = { ingred: lang === 'cn' ? product.descCN : product.descEN };
+    
+    // Find associated ingredients objects
+    const associatedIngredients = product.relatedWikiIds 
+        ? wikiItems.filter(wiki => product.relatedWikiIds?.includes(wiki.id))
+        : [];
+
     return (
         <div className="h-screen w-full flex flex-col font-sans bg-white fixed inset-0 z-50 animate-slide-up">
             <div className="p-4 flex justify-between items-center border-b border-stone-50 sticky top-0 bg-white/90 backdrop-blur-sm z-10">
@@ -44,7 +52,22 @@ const ProductDetailModal: React.FC<ProductDetailProps> = ({ product, onClose, la
                     <div>
                         <h3 className="font-bold text-amber-700 mb-3 flex items-center gap-2 px-1"><Leaf size={18}/> {lang === 'cn' ? '配料 & 描述' : 'Ingredients & Desc'}</h3>
                         <div className="bg-white p-5 rounded-2xl border border-stone-100 shadow-sm">
-                            <p className="text-stone-600 text-sm leading-relaxed">{detailData.ingred}</p>
+                            <p className="text-stone-600 text-sm leading-relaxed mb-4">{detailData.ingred}</p>
+                            
+                            {associatedIngredients.length > 0 && (
+                                <div className="pt-4 border-t border-stone-100">
+                                    <h4 className="text-[10px] font-bold text-stone-400 uppercase mb-2 flex items-center gap-1">
+                                        <Info size={10}/> {lang === 'cn' ? '核心原料 (Wiki)' : 'Key Ingredients'}
+                                    </h4>
+                                    <div className="flex flex-wrap gap-2">
+                                        {associatedIngredients.map(wiki => (
+                                            <span key={wiki.id} className="px-3 py-1.5 bg-amber-50 text-amber-800 border border-amber-100 rounded-lg text-xs font-bold flex items-center gap-1">
+                                                <Leaf size={10}/> {lang === 'cn' ? wiki.nameCN : wiki.nameEN}
+                                            </span>
+                                        ))}
+                                    </div>
+                                </div>
+                            )}
                         </div>
                     </div>
                 </div>

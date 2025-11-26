@@ -1,0 +1,5 @@
+{
+  "name": "OneSip Assistant",
+  "description": "A smart, interactive bubble tea shop assistant featuring a chat interface, dynamic menu, and ingredient wiki.",
+  "requestFramePermissions": []
+}

@@ -35,7 +35,7 @@ const WikiScreen: React.FC<WikiScreenProps> = ({ wikiItems, onClose, lang, t, pr
     };
 
     return (
-        <div className="h-screen w-full flex flex-col font-sans animate-slide-up bg-accent">
+        <div className="h-[100dvh] w-full flex flex-col font-sans animate-slide-up bg-accent">
             <div className="z-10 p-4 shadow-sm flex justify-between items-center rounded-b-3xl backdrop-blur-md bg-white/90 border-b border-stone-50 shrink-0">
                 <h2 className="font-bold text-lg flex items-center gap-2 text-primary">
                     <BookOpen size={20}/> {t.wikiTitle}

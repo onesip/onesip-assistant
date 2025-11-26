@@ -1,4 +1,5 @@
 
+
 import React, { useState, useEffect, useRef } from 'react';
 import { initFirebase } from './services/firebase';
 import { Product, WikiItem, Announcement, Message, Language } from './types';
@@ -136,6 +137,36 @@ const App: React.FC = () => {
         try {
             await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'promotion', 'main'), data);
         } catch(e) { console.error("Update promo failed", e); }
+    };
+
+    // --- RESEED / FORCE SYNC FUNCTION ---
+    const reseedDatabase = async () => {
+        if (!fbModules) {
+            alert("Firebase not connected.");
+            return;
+        }
+        const { db, doc, setDoc } = fbModules;
+        const appId = 'onesip-default';
+
+        if (window.confirm("CONFIRM SYNC: This will overwrite all cloud data with the latest code version. Are you sure?")) {
+            try {
+                // Sync Menu
+                for (const item of INITIAL_MENU_DATA) {
+                    await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'menu', item.id), item);
+                }
+                // Sync Wiki
+                for (const item of INITIAL_WIKI_DATA) {
+                    await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'wiki', item.id), item);
+                }
+                // Sync Promo
+                await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'promotion', 'main'), INITIAL_ANNOUNCEMENT_DATA);
+                
+                alert("✅ Success! Database synced with latest code data.");
+            } catch (e) {
+                console.error("Sync failed", e);
+                alert("❌ Sync failed. Check console for details.");
+            }
+        }
     };
 
     const activeMenuItems = menuItems.filter(item => item.status !== 'inactive');
@@ -326,6 +357,7 @@ const App: React.FC = () => {
             <StaffDashboard 
                 menuItems={menuItems} wikiItems={wikiItems} announcementData={announcement} 
                 updateItem={updateItem} addItem={addItem} updateWiki={updateWiki} addWiki={addWiki} updateAnnouncement={updateAnnouncement} 
+                onSyncData={reseedDatabase}
                 onExit={() => { setView('chat'); setStaffPassword(''); }} 
             />
         );

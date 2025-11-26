@@ -13,6 +13,7 @@ interface StaffDashboardProps {
     addWiki: (data: any) => void;
     updateAnnouncement: (data: any) => void;
     onSyncData: (csvText: string) => void;
+    onSyncWiki: (csvText: string) => void;
     onExit: () => void;
 }
 
@@ -173,7 +174,7 @@ const AnnouncementManager = ({ data, onSave }: { data: Announcement, onSave: (d:
     );
 };
 
-const StaffDashboard: React.FC<StaffDashboardProps> = ({ menuItems, wikiItems, announcementData, updateItem, addItem, updateWiki, addWiki, updateAnnouncement, onSyncData, onExit }) => {
+const StaffDashboard: React.FC<StaffDashboardProps> = ({ menuItems, wikiItems, announcementData, updateItem, addItem, updateWiki, addWiki, updateAnnouncement, onSyncData, onSyncWiki, onExit }) => {
     const [activeTab, setActiveTab] = useState('menu');
     const [editingItem, setEditingItem] = useState<any>(null);
     const [editingWiki, setEditingWiki] = useState<any>(null);
@@ -187,11 +188,15 @@ const StaffDashboard: React.FC<StaffDashboardProps> = ({ menuItems, wikiItems, a
         reader.onload = (event) => {
             const csvText = event.target?.result as string;
             if (csvText) {
-                onSyncData(csvText);
+                if (activeTab === 'menu') {
+                    onSyncData(csvText);
+                } else if (activeTab === 'wiki') {
+                    onSyncWiki(csvText);
+                }
             }
         };
         reader.readAsText(file);
-        // Reset input so you can upload the same file again if needed
+        // Reset input so you can upload the same file again
         e.target.value = '';
     };
 
@@ -230,9 +235,11 @@ const StaffDashboard: React.FC<StaffDashboardProps> = ({ menuItems, wikiItems, a
                 <div className="flex justify-between items-center mb-4">
                     <h2 className="font-black text-xl text-stone-800 flex items-center gap-2"><Lock size={20} className="text-emerald-600"/> Dashboard</h2>
                     <div className="flex gap-2">
-                         <button onClick={() => fileInputRef.current?.click()} className="text-xs font-bold text-blue-600 bg-blue-100 hover:bg-blue-200 px-3 py-1.5 rounded-full flex items-center gap-1 transition-colors">
-                            <Upload size={12} /> Import CSV
-                        </button>
+                        {(activeTab === 'menu' || activeTab === 'wiki') && (
+                             <button onClick={() => fileInputRef.current?.click()} className="text-xs font-bold text-blue-600 bg-blue-100 hover:bg-blue-200 px-3 py-1.5 rounded-full flex items-center gap-1 transition-colors">
+                                <Upload size={12} /> {activeTab === 'menu' ? 'Import Menu CSV' : 'Import Wiki CSV'}
+                            </button>
+                        )}
                         <button onClick={onExit} className="text-xs font-bold text-stone-500 bg-stone-100 hover:bg-stone-200 px-3 py-1.5 rounded-full transition-colors">Exit</button>
                     </div>
                 </div>

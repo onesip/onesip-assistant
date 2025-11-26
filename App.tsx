@@ -165,13 +165,13 @@ const App: React.FC = () => {
         }
     };
 
-    // --- CSV INTELLIGENT PARSER & SYNC ---
+    // --- CSV INTELLIGENT PARSER & SYNC (MENU) ---
     const parseAndSyncCSV = async (csvText: string) => {
         if (!fbModules) { alert("Firebase not connected."); return; }
         const { db, doc, setDoc } = fbModules;
         const appId = 'onesip-default';
 
-        if (!window.confirm("CONFIRM IMPORT: This will analyze your CSV and overwrite the database. Proceed?")) return;
+        if (!window.confirm("CONFIRM MENU IMPORT: This will analyze your CSV and overwrite the Menu database. Proceed?")) return;
 
         try {
             const lines = csvText.split(/\r?\n/).filter(l => l.trim() !== '');
@@ -179,9 +179,6 @@ const App: React.FC = () => {
             
             // Skip header (Row 0)
             for (let i = 1; i < lines.length; i++) {
-                // Simple CSV splitter, assuming no commas within fields for this specific use case
-                // or fields are clean. For better robustness, a library is usually preferred,
-                // but we'll use a smart split here.
                 const cols = lines[i].split(',');
                 if (cols.length < 5) continue; // Skip invalid rows
 
@@ -195,7 +192,6 @@ const App: React.FC = () => {
                 const rawIngred = cols[11]?.trim() || '';
 
                 // 1. Intelligent Name Split (EN vs CN)
-                // Find first Chinese character
                 const cnMatch = rawName.match(/[\u4e00-\u9fa5]/);
                 let nameEN = rawName;
                 let nameCN = rawName;
@@ -212,7 +208,7 @@ const App: React.FC = () => {
                 let status: any = 'active';
                 if (rawStatus.includes('新品')) status = 'new';
                 if (rawStatus.includes('下架') || rawStatus.includes('未上架')) status = 'inactive';
-                if (rawStatus.includes('n')) status = 'inactive'; // Handle 'n' from csv
+                if (rawStatus.includes('n')) status = 'inactive'; 
 
                 // 4. Map Type & SubType
                 let type: any = 'milk';
@@ -256,18 +252,76 @@ const App: React.FC = () => {
                 parsedItems.push(newItem);
             }
 
-            console.log(`Parsed ${parsedItems.length} items. Uploading...`);
-            
-            // Batch upload
+            console.log(`Parsed ${parsedItems.length} menu items.`);
             for (const item of parsedItems) {
                 await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'menu', item.id), item);
             }
-
-            alert(`✅ Successfully imported ${parsedItems.length} items!`);
+            alert(`✅ Successfully imported ${parsedItems.length} menu items!`);
 
         } catch (e) {
             console.error("CSV Parse Error", e);
-            alert("❌ Failed to parse CSV. Please ensure format matches standard.");
+            alert("❌ Failed to parse Menu CSV. Check format.");
+        }
+    };
+
+    // --- CSV INTELLIGENT PARSER & SYNC (WIKI) ---
+    const parseAndSyncWikiCSV = async (csvText: string) => {
+        if (!fbModules) { alert("Firebase not connected."); return; }
+        const { db, doc, setDoc } = fbModules;
+        const appId = 'onesip-default';
+
+        if (!window.confirm("CONFIRM WIKI IMPORT: This will analyze your CSV and overwrite the Wiki database. Proceed?")) return;
+
+        try {
+            // Split by lines
+            const lines = csvText.split(/\r?\n/).filter(l => l.trim() !== '');
+            const parsedItems: WikiItem[] = [];
+            
+            // Expected CSV Format: Name,DescCN,DescEN
+            // Skip header row if it contains 'Name' or '名称'
+            const startIndex = (lines[0].toLowerCase().includes('name') || lines[0].includes('名称')) ? 1 : 0;
+
+            for (let i = startIndex; i < lines.length; i++) {
+                // Assuming standard CSV with comma separation
+                // Note: For complex text with commas, a proper CSV parser lib is better, but simple split works for basic inputs
+                const cols = lines[i].split(',');
+                if (cols.length < 3) continue; 
+
+                const rawName = cols[0].trim();
+                const descCN = cols[1].trim();
+                const descEN = cols.slice(2).join(',').trim(); // Join rest in case desc has commas
+
+                // Name Split (Same logic as Product)
+                const cnMatch = rawName.match(/[\u4e00-\u9fa5]/);
+                let nameEN = rawName;
+                let nameCN = rawName;
+                
+                if (cnMatch && cnMatch.index) {
+                    nameEN = rawName.substring(0, cnMatch.index).trim().replace('/', '').trim();
+                    nameCN = rawName.substring(cnMatch.index).trim();
+                }
+
+                // Generate ID: i_english-name
+                const id = 'i_' + (nameEN.toLowerCase().replace(/[^a-z0-9]/g, '-').replace(/-+/g, '-').replace(/^-|-$/g, '') || `wiki_${i}`);
+
+                parsedItems.push({
+                    id,
+                    nameCN,
+                    nameEN,
+                    descCN: descCN.replace(/^"|"$/g, ''), // Remove simple quotes if present
+                    descEN: descEN.replace(/^"|"$/g, '')
+                });
+            }
+
+            console.log(`Parsed ${parsedItems.length} wiki items.`);
+            for (const item of parsedItems) {
+                await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'wiki', item.id), item);
+            }
+            alert(`✅ Successfully imported ${parsedItems.length} wiki items!`);
+
+        } catch (e) {
+            console.error("Wiki CSV Parse Error", e);
+            alert("❌ Failed to parse Wiki CSV. Ensure format: Name, DescCN, DescEN");
         }
     };
 
@@ -460,6 +514,7 @@ const App: React.FC = () => {
                 menuItems={menuItems} wikiItems={wikiItems} announcementData={announcement} 
                 updateItem={updateItem} addItem={addItem} updateWiki={updateWiki} addWiki={addWiki} updateAnnouncement={updateAnnouncement} 
                 onSyncData={parseAndSyncCSV}
+                onSyncWiki={parseAndSyncWikiCSV}
                 onExit={() => { setView('chat'); setStaffPassword(''); }} 
             />
         );

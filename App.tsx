@@ -139,6 +139,32 @@ const App: React.FC = () => {
         } catch(e) { console.error("Update promo failed", e); }
     };
 
+    const reseedDatabase = async () => {
+        if (!fbModules) { alert("Firebase not connected."); return; }
+        const { db, doc, setDoc } = fbModules;
+        const appId = 'onesip-default';
+        
+        if (!window.confirm("CONFIRM RE-SEED: This will overwrite cloud data with local code constants. Are you sure?")) return;
+
+        try {
+            // 1. Menu
+            for (const item of INITIAL_MENU_DATA) {
+                await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'menu', item.id), item);
+            }
+            // 2. Wiki
+            for (const item of INITIAL_WIKI_DATA) {
+                await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'wiki', item.id), item);
+            }
+            // 3. Promo
+            await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'promotion', 'main'), INITIAL_ANNOUNCEMENT_DATA);
+            
+            alert("✅ Database re-seeded successfully from code!");
+        } catch (e) {
+            console.error("Reseed failed", e);
+            alert("❌ Reseed failed. Check console.");
+        }
+    };
+
     // --- CSV INTELLIGENT PARSER & SYNC ---
     const parseAndSyncCSV = async (csvText: string) => {
         if (!fbModules) { alert("Firebase not connected."); return; }
@@ -411,7 +437,7 @@ const App: React.FC = () => {
     }
 
     if (selectedProduct) {
-        return <ProductDetailModal product={selectedProduct} onClose={() => setSelectedProduct(null)} lang={lang} t={t} />;
+        return <ProductDetailModal product={selectedProduct} onClose={() => setSelectedProduct(null)} lang={lang} t={t} wikiItems={wikiItems} />;
     }
 
     if (view === 'staff-login') {
@@ -462,7 +488,7 @@ const App: React.FC = () => {
         );
     }
 
-    if (view === 'wiki') return <WikiScreen onClose={() => setView('chat')} lang={lang} t={t} wikiItems={wikiItems} />;
+    if (view === 'wiki') return <WikiScreen onClose={() => setView('chat')} lang={lang} t={t} wikiItems={wikiItems} products={menuItems} />;
 
     return (
         <div className="flex flex-col h-screen font-sans mx-auto max-w-md shadow-2xl overflow-hidden relative bg-accent">

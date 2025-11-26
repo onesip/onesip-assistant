@@ -550,7 +550,7 @@ const App: React.FC = () => {
 
     if (view === 'menu') {
         return (
-            <div className="h-screen w-full flex flex-col font-sans animate-slide-up bg-accent">
+            <div className="h-[100dvh] w-full flex flex-col font-sans animate-slide-up bg-accent">
                 <div className="z-10 p-4 shadow-sm flex justify-between items-center rounded-b-3xl backdrop-blur-md bg-white/90 border-b border-stone-50 shrink-0">
                     <h2 className="font-bold text-lg text-primary">{lang === 'cn' ? '全线菜单' : 'Full Menu'}</h2>
                     <button onClick={() => setView('chat')} className="p-2 bg-stone-100 rounded-full text-gray-500 hover:bg-stone-200 transition"><X size={20} /></button>
@@ -574,7 +574,7 @@ const App: React.FC = () => {
     if (view === 'wiki') return <WikiScreen onClose={() => setView('chat')} lang={lang} t={t} wikiItems={wikiItems} products={menuItems} />;
 
     return (
-        <div className="flex flex-col h-screen font-sans mx-auto max-w-md shadow-2xl overflow-hidden relative bg-accent">
+        <div className="flex flex-col h-[100dvh] font-sans mx-auto max-w-md shadow-2xl overflow-hidden relative bg-accent">
             <BlackFridayModal isOpen={showNotice} onClose={() => setShowNotice(false)} lang={lang} data={announcement} />
             <div className="flex flex-col items-center justify-center pt-6 pb-2 sticky top-0 z-10 relative rounded-b-[2.5rem] shadow-sm bg-white">
                 <button onClick={() => { setMessages([]); setMascotMood('idle'); setShowNotice(false); setSelectedProduct(null); setView('standby'); }} className="absolute left-5 top-5 flex items-center justify-center w-8 h-8 bg-stone-100 rounded-full text-stone-600 hover:bg-stone-200 hover:text-red-500 transition"><Trash2 size={14} /></button>

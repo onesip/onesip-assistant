@@ -19,6 +19,7 @@ export interface Product {
     descEN: string;
     sugarGuideCN: string;
     sugarGuideEN: string;
+    relatedWikiIds?: string[]; // New field for linking ingredients
 }
 
 export interface WikiItem {

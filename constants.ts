@@ -73,15 +73,196 @@ export const INITIAL_MENU_DATA: Product[] = [
 ];
 
 export const INITIAL_WIKI_DATA: WikiItem[] = [
-    { id: 'i_fresh_milk', nameCN: '鲜奶', nameEN: 'Fresh Milk', descCN: '新鲜牛乳。', descEN: 'Fresh cow milk.' },
-    { id: 'i_cream_blend', nameCN: '调和乳', nameEN: 'Cream Base', descCN: '提升饮品醇厚度和顺滑感。', descEN: 'Enhances richness.' },
-    { id: 'i_oat', nameCN: '燕麦奶', nameEN: 'Oatmilk', descCN: '植物基底，口感顺滑。', descEN: 'Plant-based oat milk.' },
-    { id: 'i_boba', nameCN: '珍珠', nameEN: 'Pearls', descCN: 'Q弹木薯珍珠。', descEN: 'Tapioca pearls.' },
-    { id: 'i_sago', nameCN: '西米', nameEN: 'Sago', descCN: '小颗粒透明西米。', descEN: 'Small sago pearls.' },
-    { id: 'i_matcha', nameCN: '千目抹茶', nameEN: 'Matcha', descCN: '高山茶园低温研磨。', descEN: 'Ceremonial grade matcha.' },
-    { id: 'i_jasmine', nameCN: '茉莉绿茶', nameEN: 'Jasmine Tea', descCN: '茉莉花窨制绿茶。', descEN: 'Jasmine green tea.' },
-    { id: 'i_four_seasons', nameCN: '四季春乌龙', nameEN: '4 Seasons Oolong', descCN: '清香型乌龙茶。', descEN: 'Floral oolong tea.' },
-    { id: 'i_dalgona', nameCN: '打勾娜糖块', nameEN: 'Dalgona Candy', descCN: '韩式焦糖脆糖块。', descEN: 'Korean honeycomb toffee candy.' }
+    { 
+        id: 'i_pear', 
+        nameCN: '小吊梨', 
+        nameEN: 'Candied Mini Pear', 
+        descCN: '小吊梨是把整颗梨用糖煮后再风干的小型蜜渍梨，口感软糯带一点焦糖香。它在北方秋冬甜品里很常见，被当作“暖甜点”，在饮品里带来清甜的果香和舒服的喉感。', 
+        descEN: '“Xiao Diao Li” is a small whole pear that has been gently candied and dried. The texture is soft and chewy with a hint of caramelized sweetness. It’s a classic ingredient in autumn–winter desserts and, in drinks, it adds a mellow pear aroma and a cozy, comforting sweetness.' 
+    },
+    { 
+        id: 'i_tremella', 
+        nameCN: '银耳', 
+        nameEN: 'White Jelly Fungus', 
+        descCN: '银耳又叫“雪耳”，是传统中式甜品里常见的食材。煮熟后呈胶冻状、软糯Q弹，用在饮品里会让口感更稠滑，有一种在“喝甜品”的满足感。', 
+        descEN: 'White jelly fungus, also known as snow fungus, is a traditional dessert ingredient in Chinese cuisine. Once cooked, it becomes slightly gelatinous and bouncy. In drinks, it adds a thicker, dessert-like mouthfeel and a gentle, soothing texture.' 
+    },
+    { 
+        id: 'i_jujube', 
+        nameCN: '红枣', 
+        nameEN: 'Red Dates (Jujube)', 
+        descCN: '红枣是常见的干制枣果，在中式点心和甜汤里出现频率极高。它带有独特的枣香和温润甜味，可以让奶茶或热饮的味道更圆润，回甘更长。', 
+        descEN: 'Red dates (jujube) are widely used in Chinese desserts and sweet soups. They bring a characteristic date aroma and a warm, rounded sweetness, making milk teas and hot drinks taste fuller with a longer, gentle aftertaste.' 
+    },
+    { 
+        id: 'i_longan', 
+        nameCN: '桂圆', 
+        nameEN: 'Dried Longan', 
+        descCN: '桂圆是去壳去核后的龙眼果肉，多以干桂圆的形式入甜汤和茶饮。它有浓郁的蜜香和果干风味，在热饮里会带出很“养”的感觉，适合做偏甜暖的风味基底。', 
+        descEN: 'Dried longan is the peeled and pitted flesh of the longan fruit, often used in sweet soups and herbal teas. It has a rich honey-like aroma and dried-fruit sweetness. In hot drinks, it gives a nourishing, cozy profile and works well as a sweet, warming base note.' 
+    },
+    { 
+        id: 'i_ginger', 
+        nameCN: '姜母', 
+        nameEN: 'Old Ginger', 
+        descCN: '姜母指生长时间更长的老姜，辛辣感更明显，香气更厚。常用在亚洲传统暖身饮品里，加入奶茶或茶饮后，会带出明显的辛香和暖胃感，让整体风味更有层次。', 
+        descEN: '“Old ginger” refers to mature ginger with stronger spiciness and deeper aroma. It is widely used in traditional warming drinks. Added to tea or milk tea, it brings a pronounced spicy heat and warming sensation, giving the drink more structure and character.' 
+    },
+    { 
+        id: 'i_boba', 
+        nameCN: '珍珠', 
+        nameEN: 'Tapioca Pearls', 
+        descCN: '珍珠是以木薯淀粉为主原料制作的小圆球，是台湾奶茶文化的代表配料之一。煮好的珍珠软糯Q弹、带有轻微黑糖或糖浆香，是“咀嚼控”的快乐来源，也是奶茶最经典的口感标志。', 
+        descEN: 'Tapioca pearls are made mainly from cassava starch and are the signature topping of Taiwanese bubble tea. Properly cooked pearls are chewy and bouncy, often coated with a hint of brown sugar or syrup. They provide the iconic “chew” that defines bubble tea.' 
+    },
+    { 
+        id: 'i_agar', 
+        nameCN: '寒天晶球', 
+        nameEN: 'Agar Crystal Pearls', 
+        descCN: '寒天晶球是以海藻提取物寒天为胶体做成的透明小球，比珍珠更清爽脆弹。它最早多出现在日式甜品和轻负担饮品中，在杯子里像小水晶一样，带来干净、轻盈的咀嚼口感。', 
+        descEN: 'Agar crystal pearls are made from agar, a jelly derived from seaweed. Compared with tapioca pearls, they are lighter and slightly firmer, with a clean, refreshing bite. In drinks, they look like tiny crystals and add a light, crisp chewing experience.' 
+    },
+    { 
+        id: 'i_tea_jelly', 
+        nameCN: '茶冻', 
+        nameEN: 'Tea Jelly', 
+        descCN: '茶冻是用茶汤加凝胶类原料做成的茶味果冻，源自东亚各种“茶冻/咖啡冻”甜品。和奶茶搭配时，茶冻能保留茶香，又带有柔软弹牙的口感，让一杯饮品同时兼具喝和“吃”的满足。', 
+        descEN: 'Tea jelly is made by setting brewed tea with a gelling agent, inspired by East Asian tea or coffee jellies. When paired with milk tea, it keeps the tea aroma while adding a soft, bouncy texture, turning a drink into something you can both sip and “eat”.' 
+    },
+    { 
+        id: 'i_cheese', 
+        nameCN: '芝士奶盖', 
+        nameEN: 'Cheese Milk Foam', 
+        descCN: '芝士奶盖由奶油、奶酪等打发而成，是近十多年新式茶饮的标志之一。它带有微咸的芝士香和奶油的顺滑，覆盖在茶面上，喝起来像茶配上芝士慕斯，让茶更有“甜品感”。', 
+        descEN: 'Cheese milk foam is a whipped mixture of cream and cheese, and has become a signature of modern tea drinks. It is slightly salty, rich, and creamy. Poured on top of tea, it tastes like drinking tea through a layer of cheese mousse, giving a dessert-like experience.' 
+    },
+    { 
+        id: 'i_matcha_cloud', 
+        nameCN: '抹茶云顶', 
+        nameEN: 'Matcha Cloud Topping', 
+        descCN: '抹茶云顶是在茶面上铺上一层由抹茶、乳制品和椰奶一起打发成的绵密奶霜，像一朵飘在杯里的云。它保留了抹茶的清苦与鲜香，椰奶带来轻盈的椰香和一点热带气息，让整体口感顺滑柔和但不厚腻。', 
+        descEN: 'Matcha cloud topping is a fluffy cream layer made from matcha, dairy, and coconut milk, floating gently on top of the drink like a cloud. It keeps the fresh, slightly bitter notes of matcha, while the coconut milk adds a light tropical aroma and softer sweetness.' 
+    },
+    { 
+        id: 'i_mango_pomelo', 
+        nameCN: '杨枝甘露', 
+        nameEN: 'Mango Pomelo Sago', 
+        descCN: '杨枝甘露是起源于香港的经典甜品，以芒果、西柚/柚子和西米为主角，后来延伸到饮品界。典型风味是芒果的浓郁甜香配上柑橘的微酸和西米的Q弹，在杯中就是“可以喝的港式甜品”。', 
+        descEN: 'Mango pomelo sago is a classic Hong Kong dessert made with mango, pomelo or grapefruit, and sago. In drink form, it delivers rich mango sweetness balanced by citrusy tartness, with sago pearls adding a chewy bite—essentially a drinkable Hong Kong dessert.' 
+    },
+    { 
+        id: 'i_sago', 
+        nameCN: '西米', 
+        nameEN: 'Sago', 
+        descCN: '西米原本由西米椰子树的淀粉制成，现在多用木薯淀粉替代，成为小颗粒透明“珍珠”。它入口软Q但更细腻，常出现在东南亚甜品和港式糖水中，在饮品里带来细腻又不抢味的口感。', 
+        descEN: 'Sago was traditionally made from the pith of sago palm trees, now often replaced with tapioca starch. The small translucent pearls are soft and gently chewy. Widely used in Southeast Asian and Hong Kong-style desserts, they add a delicate texture without overpowering the drink’s flavor.' 
+    },
+    { 
+        id: 'i_jasmine', 
+        nameCN: '茉莉绿茶', 
+        nameEN: 'Jasmine Green Tea', 
+        descCN: '茉莉绿茶是用绿茶坯反复与茉莉花窨制得来的花茶，在中国有上百年历史。它同时保留绿茶的清爽和茉莉花的馥郁花香，做成茶饮时显得干净、优雅，适合搭配果香或轻奶香。', 
+        descEN: 'Jasmine green tea is a traditional Chinese tea made by repeatedly scenting green tea leaves with fresh jasmine blossoms. It combines the freshness of green tea with the elegant floral aroma of jasmine. In drinks, it tastes clean and refined, pairing well with fruit or light milk.' 
+    },
+    { 
+        id: 'i_honey_black', 
+        nameCN: '蜜香红茶', 
+        nameEN: 'Honey-Fragrant Black Tea', 
+        descCN: '蜜香红茶多源自小叶种茶区，经小绿叶蝉叮咬等特殊工艺，茶叶会自然发展出类似蜂蜜和水果干的香气。茶汤圆润、带天然蜜甜感，用来做奶茶或果茶，可以减少对糖的依赖，也能喝到丰富香气。', 
+        descEN: 'Honey-fragrant black tea often comes from specific small-leaf tea regions. Due to special growing conditions, the leaves naturally develop honeyed and dried-fruit aromatics. The liquor is smooth and naturally sweet, ideal for milk teas or fruit teas that need depth without too much added sugar.' 
+    },
+    { 
+        id: 'i_matcha', 
+        nameCN: '千目高山抹茶', 
+        nameEN: 'High-Mountain Matcha', 
+        descCN: `千目高山抹茶指产自高海拔茶园、用细筛（千目）研磨出的高等级抹茶粉。
+
+• 香气最佳释放温度：
+抹茶不适合用开水冲，水温控制在 70℃ 左右 时，香气释放最饱满，苦涩感更轻，颜色也更鲜亮。
+
+• ONESIP 内部推荐打法：
+1. 先用细筛筛抹茶，让粉末更蓬松、不结块。
+2. 取适量抹茶粉（例如 2–3 g），加入少量 70℃ 温水（约 20–30 ml）先调成顺滑无颗粒的浓抹茶液。
+3. 用茶筅或电动打泡器快速打到表面有细腻泡沫，再按配方加入牛奶、糖浆等做成对应饮品。
+4. 避免使用 80℃ 以上或沸水，容易让抹茶变苦、发黄、香气流失。`, 
+        descEN: `High-mountain matcha is premium-grade matcha made from tea leaves grown at higher elevations and finely sifted.
+
+• Best aroma release temperature:
+Matcha should not be brewed with boiling water. Around 70°C is ideal for unlocking its full aroma while keeping bitterness low.
+
+• Simple at-home guide:
+"When making matcha at home, don’t pour boiling water directly. Let the water cool to about 70°C, first blend a small amount of water with the matcha powder until smooth, then slowly add the rest of the water or milk and whisk until slightly foamy."` 
+    },
+    { 
+        id: 'i_hojicha', 
+        nameCN: '焙茶', 
+        nameEN: 'Hojicha (Roasted Tea)', 
+        descCN: '焙茶是将绿茶的茶叶和茶梗经过深度烘焙的茶，起源于日本。几乎没有青草气，而是带明显的大麦、坚果和烘烤谷物香气，咖啡因含量也相对较低，非常适合做成秋冬风味的奶茶或拿铁。', 
+        descEN: 'Hojicha is a roasted Japanese tea made from green tea leaves and stems. The roasting removes grassy notes and brings out toasty aromas reminiscent of barley, nuts, and roasted grains. It is naturally lower in caffeine and works beautifully in autumn–winter style lattes.' 
+    },
+    { 
+        id: 'i_four_seasons', 
+        nameCN: '四季春乌龙', 
+        nameEN: 'Four Seasons Spring Oolong', 
+        descCN: '四季春乌龙是台湾常见品种，属于清香型乌龙，全年可采，因此得名“四季春”。它有明显花香和清甜茶汤，比绿茶多一分厚度，又比传统乌龙更轻盈，是果茶和轻奶茶的万能底茶。', 
+        descEN: 'Four Seasons Spring Oolong is a popular Taiwanese tea cultivar, known for its fresh, floral style. The liquor is lightly sweet, floral, and slightly fuller than green tea, yet lighter than traditional roasted oolong—an ideal all-round base for fruit teas and light milk teas.' 
+    },
+    { 
+        id: 'i_osmanthus', 
+        nameCN: '桂花乌龙', 
+        nameEN: 'Osmanthus Oolong', 
+        descCN: '桂花乌龙是用乌龙茶与桂花窨制或调配而成，结合了茶香与桂花香。入口带有淡淡蜜糖与桂花糕的香气，让饮品有一种中式点心的氛围。', 
+        descEN: 'Osmanthus oolong is created by blending or scenting oolong tea with osmanthus flowers. It carries a soft honey-like sweetness and the aroma of osmanthus pastries. In drinks, it gives a gentle dessert-like, distinctly Chinese pastry vibe.' 
+    },
+    { 
+        id: 'i_camellia', 
+        nameCN: '山茶花乌龙', 
+        nameEN: 'Camellia Oolong', 
+        descCN: '山茶花乌龙以乌龙茶为基底，辅以山茶花香气或窨制而成。相比桂花乌龙，它的花香更清雅，像院子里刚开的花，配合奶或果味时，会让杯子闻起来像一束新鲜花束。', 
+        descEN: 'Camellia oolong uses oolong tea as the base, infused or blended with camellia aroma. The floral note is delicate and airy—like freshly opened garden flowers. When combined with milk or fruit, the drink smells like a fresh bouquet in a cup.' 
+    },
+    { 
+        id: 'i_fresh_milk_tea', 
+        nameCN: '鲜奶茶', 
+        nameEN: 'Fresh Milk Tea', 
+        descCN: '鲜奶茶指以鲜牛奶而不是植脂末或奶精制作的奶茶，是现代新式茶饮的基础款。它保留茶汤的骨架，再叠加牛奶的醇厚和自然乳香，口感干净顺滑，适合作为“日常喝得住”的常备产品。', 
+        descEN: 'Fresh milk tea is made with real fresh milk instead of non-dairy creamer. It keeps the structure of brewed tea while adding the richness and natural aroma of milk. The result is clean, smooth, and easy to drink regularly as a go-to classic.' 
+    },
+    { 
+        id: 'i_thai', 
+        nameCN: '泰国奶茶', 
+        nameEN: 'Thai Milk Tea', 
+        descCN: '泰国奶茶源自泰国街头文化，以浓泡红茶搭配炼乳、淡奶和糖，呈现标志性的橙红色。风味浓郁甜顺，带有淡淡香料与焦糖感，即使冰块融化后也很有存在感，是“甜党”的快乐选项。', 
+        descEN: 'Thai milk tea comes from Thai street drink culture. It’s made with strong-brewed black tea, condensed milk, evaporated milk, and sugar, giving it a signature orange hue. The flavor is rich, sweet, and slightly spiced with a caramel note—perfect for sweet-tooth drinkers.' 
+    },
+    { 
+        id: 'i_salte', 
+        nameCN: '咸法酪', 
+        nameEN: 'Savory French-Style Cheese', 
+        descCN: '咸法酪可以理解为法式风格的轻咸奶酪奶霜，灵感来自奶酪慕斯和咸味黄油甜点。它带有微微咸味和丰富乳香，用在饮品顶部时，可以中和底部茶或果饮的甜度，让一杯饮品瞬间升级成分层甜品。', 
+        descEN: '“Xian Fa Lao” is a French-inspired lightly salted cream cheese topping, drawing from cheese mousse and salted butter desserts. It has a gentle savory note and rich dairy aroma. On top of a drink, it balances sweetness and instantly turns the beverage into a layered dessert-in-a-cup.' 
+    },
+    { 
+        id: 'i_taro_balls', 
+        nameCN: '芋园', 
+        nameEN: 'Taro Balls', 
+        descCN: '芋园源自台湾传统甜品，是以芋头（有时加入地瓜、紫薯）和淀粉手工制成的小块。煮熟后的芋园Q弹中带点粉糯，咬开有浓厚芋头香，是“芋头控”在一杯饮品里最满足的一口咀嚼。', 
+        descEN: 'Taro balls come from Taiwanese dessert culture and are handmade from taro (sometimes with sweet potato or purple yam) and starch. After cooking, they are bouncy yet slightly powdery inside, releasing a strong taro aroma—pure happiness for taro lovers in drink form.' 
+    },
+    { 
+        id: 'i_popping_boba', 
+        nameCN: '爆爆珠', 
+        nameEN: 'Popping Boba', 
+        descCN: '爆爆珠是外层为海藻胶、内里包裹果汁的小球，最早多见于新式果茶和甜品饮品。入口轻轻一咬便会“爆汁”，果味瞬间在口腔里散开，是偏玩乐、互动感很强的一类配料。', 
+        descEN: 'Popping boba are small spheres with a thin seaweed-based shell and liquid fruit juice inside. Often used in modern fruit teas and dessert drinks, they pop in the mouth and release a burst of flavor, adding a playful, interactive element to the drink.' 
+    },
+    { 
+        id: 'i_milk_tea_gen', 
+        nameCN: '奶茶', 
+        nameEN: 'Milk Tea', 
+        descCN: '广义的奶茶是茶汤与奶（鲜奶、炼乳或奶精等）的结合，源头可以追溯到英式奶茶、港式奶茶与台湾手摇饮等不同传统。它保留茶的清苦骨架，又加入奶的柔和与甜香，是整个 ONESIP 体系里最核心、也最容易被各类人群接受的基础形态。', 
+        descEN: 'Milk tea is the combination of brewed tea with milk. Its roots include British milk tea, Hong Kong-style milk tea, and Taiwanese hand-shaken drinks. It keeps the backbone of tea’s slight bitterness while adding the softness and sweetness of milk, making it the most fundamental format in the ONESIP lineup.' 
+    }
 ];
 
 export const INITIAL_ANNOUNCEMENT_DATA: Announcement = {
@@ -145,3 +326,4 @@ export const UI_TEXT = {
         nlp: { staffPrompt: "Staff mode requested. Please enter passcode. 🔒", new: "Check out our seasonal specials! 🎁 Don't miss the Xmas limited:", default: "Meow? I didn't quite catch that... 🤔\nTry tapping the buttons below 👇", found: "Found it! Is this what you're looking for? 👇" }
     }
 };
+

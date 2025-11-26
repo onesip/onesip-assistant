@@ -1,6 +1,7 @@
+
 import { initializeApp } from "firebase/app";
 import { getAuth, signInAnonymously } from "firebase/auth";
-import { getFirestore, collection, doc, setDoc, onSnapshot, updateDoc, Firestore, Auth } from "firebase/firestore";
+import { getFirestore, collection, doc, setDoc, onSnapshot, updateDoc, deleteDoc, Firestore, Auth } from "firebase/firestore";
 
 interface FirebaseModules {
   auth: Auth;
@@ -9,6 +10,7 @@ interface FirebaseModules {
   doc: typeof doc;
   setDoc: typeof setDoc;
   updateDoc: typeof updateDoc;
+  deleteDoc: typeof deleteDoc;
   onSnapshot: typeof onSnapshot;
 }
 
@@ -42,7 +44,7 @@ export const initFirebase = async (): Promise<FirebaseModules | null> => {
     const db = getFirestore(app);
     await signInAnonymously(auth);
     
-    firebaseModules = { auth, db, collection, doc, setDoc, updateDoc, onSnapshot };
+    firebaseModules = { auth, db, collection, doc, setDoc, updateDoc, deleteDoc, onSnapshot };
     return firebaseModules;
   } catch (e) {
     console.error("Firebase init failed:", e);

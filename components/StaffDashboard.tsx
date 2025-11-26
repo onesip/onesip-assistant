@@ -1,7 +1,7 @@
 
 import React, { useState, useRef } from 'react';
 import { Product, WikiItem, Announcement } from '../types';
-import { Lock, Plus, Edit, X, Upload, FileText } from 'lucide-react';
+import { Lock, Plus, Edit, X, Upload, FileText, Link as LinkIcon, Check } from 'lucide-react';
 
 interface StaffDashboardProps {
     menuItems: Product[];
@@ -16,8 +16,23 @@ interface StaffDashboardProps {
     onExit: () => void;
 }
 
-const EditProductModal = ({ item, onSave, onClose }: { item: any, onSave: (d: any) => void, onClose: () => void }) => {
-    const [formData, setFormData] = useState(item || { id: `new_${Date.now()}`, status: 'active', type: 'milk', subType: 'classic', tags: [], nameCN: '', nameEN: '', price: 5.0, keywords: '', descCN: '', descEN: '', sugarGuideCN: '', sugarGuideEN: '' });
+const EditProductModal = ({ item, wikiItems, onSave, onClose }: { item: any, wikiItems: WikiItem[], onSave: (d: any) => void, onClose: () => void }) => {
+    const [formData, setFormData] = useState<Product>(item || { 
+        id: `new_${Date.now()}`, 
+        status: 'active', 
+        type: 'milk', 
+        subType: 'classic', 
+        tags: [], 
+        nameCN: '', 
+        nameEN: '', 
+        price: 5.0, 
+        keywords: '', 
+        descCN: '', 
+        descEN: '', 
+        sugarGuideCN: '', 
+        sugarGuideEN: '',
+        relatedWikiIds: [] 
+    });
     
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => 
         setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -25,6 +40,14 @@ const EditProductModal = ({ item, onSave, onClose }: { item: any, onSave: (d: an
     const handleTagChange = (tag: string) => {
         const newTags = formData.tags.includes(tag) ? formData.tags.filter((t: string) => t !== tag) : [...formData.tags, tag];
         setFormData({ ...formData, tags: newTags });
+    };
+
+    const handleWikiToggle = (wikiId: string) => {
+        const currentIds = formData.relatedWikiIds || [];
+        const newIds = currentIds.includes(wikiId) 
+            ? currentIds.filter(id => id !== wikiId) 
+            : [...currentIds, wikiId];
+        setFormData({ ...formData, relatedWikiIds: newIds });
     };
 
     return (
@@ -38,6 +61,30 @@ const EditProductModal = ({ item, onSave, onClose }: { item: any, onSave: (d: an
                     <div><label className="text-[10px] font-bold text-stone-400 uppercase block mb-1">Temp Tags</label><div className="flex gap-2">{['hot', 'cold'].map(t => (<button key={t} onClick={() => handleTagChange(t)} className={`px-3 py-1 rounded-full text-xs border ${formData.tags.includes(t) ? 'bg-emerald-100 border-emerald-500 text-emerald-700' : 'bg-white border-stone-200 text-stone-500'}`}>{t.toUpperCase()}</button>))}</div></div>
                     <div><label className="text-[10px] font-bold text-stone-400 uppercase">Ingredients (CN)</label><textarea name="descCN" value={formData.descCN} onChange={handleChange} className="w-full p-2 border rounded-lg" rows={2}/></div>
                     <div><label className="text-[10px] font-bold text-stone-400 uppercase">Ingredients (EN)</label><textarea name="descEN" value={formData.descEN} onChange={handleChange} className="w-full p-2 border rounded-lg" rows={2}/></div>
+                    
+                    {/* Wiki Association Section */}
+                    <div className="bg-stone-50 p-3 rounded-xl border border-stone-100">
+                        <label className="text-[10px] font-bold text-emerald-600 uppercase mb-2 flex items-center gap-1">
+                            <LinkIcon size={12}/> Link Wiki Ingredients (关联原料)
+                        </label>
+                        <div className="flex flex-wrap gap-2 max-h-32 overflow-y-auto">
+                            {wikiItems.map(wiki => {
+                                const isSelected = formData.relatedWikiIds?.includes(wiki.id);
+                                return (
+                                    <button 
+                                        key={wiki.id} 
+                                        onClick={() => handleWikiToggle(wiki.id)}
+                                        className={`px-3 py-1.5 rounded-full text-xs font-bold border transition-all flex items-center gap-1 ${isSelected ? 'bg-emerald-600 text-white border-emerald-600 shadow-sm' : 'bg-white text-stone-500 border-stone-200 hover:bg-stone-100'}`}
+                                    >
+                                        {isSelected && <Check size={10} />}
+                                        {wiki.nameCN}
+                                    </button>
+                                );
+                            })}
+                        </div>
+                        <p className="text-[10px] text-stone-400 mt-2 italic">Select ingredients to show them on the drink detail page and enable wiki linking.</p>
+                    </div>
+
                     <div><label className="text-[10px] font-bold text-stone-400 uppercase">Sugar Guide (CN & EN)</label><input name="sugarGuideCN" value={formData.sugarGuideCN} onChange={handleChange} className="w-full p-2 border rounded-lg" placeholder="中文建议"/> <input name="sugarGuideEN" value={formData.sugarGuideEN} onChange={handleChange} className="w-full p-2 border rounded-lg mt-1" placeholder="English Guide"/></div>
                 </div>
                 <div className="p-4 border-t border-stone-100 bg-stone-50"><button onClick={() => onSave(formData)} className="w-full py-3 bg-emerald-600 text-white font-bold rounded-xl shadow-lg hover:bg-emerald-700 transition">Save Product</button></div>
@@ -161,6 +208,7 @@ const StaffDashboard: React.FC<StaffDashboardProps> = ({ menuItems, wikiItems, a
             {editingItem && (
                 <EditProductModal 
                     item={editingItem === 'new' ? null : editingItem} 
+                    wikiItems={wikiItems}
                     onSave={(data) => { 
                         editingItem === 'new' ? addItem(data) : updateItem(data.id, data); 
                         setEditingItem(null); 

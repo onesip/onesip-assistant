@@ -1,6 +1,7 @@
+
 import React, { useState } from 'react';
 import { Product, WikiItem, Announcement } from '../types';
-import { Lock, Plus, Edit, X } from 'lucide-react';
+import { Lock, Plus, Edit, X, RefreshCw } from 'lucide-react';
 
 interface StaffDashboardProps {
     menuItems: Product[];
@@ -11,6 +12,7 @@ interface StaffDashboardProps {
     updateWiki: (id: string, data: any) => void;
     addWiki: (data: any) => void;
     updateAnnouncement: (data: any) => void;
+    onSyncData: () => void;
     onExit: () => void;
 }
 
@@ -124,7 +126,7 @@ const AnnouncementManager = ({ data, onSave }: { data: Announcement, onSave: (d:
     );
 };
 
-const StaffDashboard: React.FC<StaffDashboardProps> = ({ menuItems, wikiItems, announcementData, updateItem, addItem, updateWiki, addWiki, updateAnnouncement, onExit }) => {
+const StaffDashboard: React.FC<StaffDashboardProps> = ({ menuItems, wikiItems, announcementData, updateItem, addItem, updateWiki, addWiki, updateAnnouncement, onSyncData, onExit }) => {
     const [activeTab, setActiveTab] = useState('menu');
     const [editingItem, setEditingItem] = useState<any>(null);
     const [editingWiki, setEditingWiki] = useState<any>(null);
@@ -154,7 +156,12 @@ const StaffDashboard: React.FC<StaffDashboardProps> = ({ menuItems, wikiItems, a
             <div className="bg-white border-b border-stone-200 pt-10 pb-2 sticky top-0 z-10 shadow-sm px-4">
                 <div className="flex justify-between items-center mb-4">
                     <h2 className="font-black text-xl text-stone-800 flex items-center gap-2"><Lock size={20} className="text-emerald-600"/> Dashboard</h2>
-                    <button onClick={onExit} className="text-xs font-bold text-stone-500 bg-stone-100 px-3 py-1.5 rounded-full">Exit</button>
+                    <div className="flex gap-2">
+                         <button onClick={onSyncData} className="text-xs font-bold text-blue-600 bg-blue-100 hover:bg-blue-200 px-3 py-1.5 rounded-full flex items-center gap-1 transition-colors">
+                            <RefreshCw size={12} /> Sync Data
+                        </button>
+                        <button onClick={onExit} className="text-xs font-bold text-stone-500 bg-stone-100 hover:bg-stone-200 px-3 py-1.5 rounded-full transition-colors">Exit</button>
+                    </div>
                 </div>
                 <div className="flex gap-1 bg-stone-100 p-1 rounded-xl">
                     {['menu', 'wiki', 'promo'].map(tab => (

@@ -1,4 +1,5 @@
 
+
 import React from 'react';
 import { Product, Language, WikiItem } from '../types';
 import { ChevronLeft, Coffee, Droplet, Leaf, Info } from 'lucide-react';
@@ -20,7 +21,7 @@ const ProductDetailModal: React.FC<ProductDetailProps> = ({ product, onClose, la
         : [];
 
     return (
-        <div className="h-screen w-full flex flex-col font-sans bg-white fixed inset-0 z-50 animate-slide-up">
+        <div className="h-[100dvh] w-full flex flex-col font-sans bg-white fixed inset-0 z-50 animate-slide-up">
             <div className="p-4 flex justify-between items-center border-b border-stone-50 sticky top-0 bg-white/90 backdrop-blur-sm z-10">
                 <button onClick={onClose} className="p-2 rounded-full hover:bg-stone-50 transition">
                     <ChevronLeft size={24} className="text-textMain"/>

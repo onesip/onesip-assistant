@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useRef } from 'react';
 import { initFirebase } from './services/firebase';
 import { Product, WikiItem, Announcement, Message, Language } from './types';
@@ -182,16 +183,34 @@ const App: React.FC = () => {
         
         if (category === 'milk') {
             question = t.quiz.q3_milk;
-            options = [{ label: t.quiz.a3_milk_healthy, filter: (i:Product) => i.subType === 'healthy' }, { label: t.quiz.a3_milk_classic, filter: (i:Product) => i.subType === 'classic' }, { label: t.quiz.a3_milk_rich, filter: (i:Product) => i.subType === 'rich' }, { label: t.quiz.a3_milk_plant, filter: (i:Product) => i.subType === 'plant' }];
+            options = [
+                { label: t.quiz.a3_milk_healthy, filter: (i:Product) => i.subType === 'healthy' }, 
+                { label: t.quiz.a3_milk_classic, filter: (i:Product) => i.subType === 'classic' }, 
+                { label: t.quiz.a3_milk_rich, filter: (i:Product) => i.subType === 'rich' }, // Includes Salté and Brown Sugar
+                { label: t.quiz.a3_milk_plant, filter: (i:Product) => i.subType === 'plant' }
+            ];
         } else if (category === 'fruit') {
             question = t.quiz.q3_fruit;
-            options = [{ label: t.quiz.a3_fruit_sweet, filter: (i:Product) => i.subType === 'sweet' }, { label: t.quiz.a3_fruit_sour, filter: (i:Product) => i.subType === 'sour' }];
+            options = [
+                { label: "Cheese Foam 🧀 (Cheezo)", filter: (i:Product) => i.subType === 'cheese' },
+                { label: t.quiz.a3_fruit_sweet, filter: (i:Product) => i.subType === 'sweet' }, 
+                { label: t.quiz.a3_fruit_sour, filter: (i:Product) => i.subType === 'sour' }
+            ];
         } else if (category === 'matcha') {
             question = t.quiz.q3_matcha;
-            options = [{ label: t.quiz.a3_matcha_classic, filter: (i:Product) => i.subType === 'classic' }, { label: t.quiz.a3_matcha_rich, filter: (i:Product) => i.subType === 'rich' }, { label: t.quiz.a3_matcha_plant, filter: (i:Product) => i.subType === 'plant' }, { label: t.quiz.a3_matcha_fruity, filter: (i:Product) => i.subType === 'fruity' }];
+            options = [
+                { label: t.quiz.a3_matcha_classic, filter: (i:Product) => i.subType === 'classic' }, 
+                { label: t.quiz.a3_matcha_rich, filter: (i:Product) => i.subType === 'rich' }, 
+                { label: t.quiz.a3_matcha_plant, filter: (i:Product) => i.subType === 'plant' }, 
+                { label: t.quiz.a3_matcha_fruity, filter: (i:Product) => i.subType === 'fruity' }
+            ];
         } else {
             question = t.quiz.q3_coffee;
-            options = [{ label: t.quiz.a3_coffee_rich, filter: (i:Product) => i.subType === 'rich' }, { label: t.quiz.a3_coffee_fruity, filter: (i:Product) => i.subType === 'fruity' }, { label: t.quiz.a3_coffee_plant, filter: (i:Product) => i.subType === 'plant' }];
+            options = [
+                { label: t.quiz.a3_coffee_rich, filter: (i:Product) => i.subType === 'rich' }, 
+                { label: t.quiz.a3_coffee_fruity, filter: (i:Product) => i.subType === 'fruity' }, 
+                { label: t.quiz.a3_coffee_plant, filter: (i:Product) => i.subType === 'plant' }
+            ];
         }
         
         setTimeout(() => addBotMessage(question, (
@@ -208,7 +227,9 @@ const App: React.FC = () => {
         setMascotMood('thinking');
         const results = activeMenuItems.filter(item => {
             if (item.type !== category) return false;
+            // Hot check
             if (temp === 'hot' && !item.tags.includes('hot')) return false;
+            // Cold check
             if (temp === 'cold' && !item.tags.includes('cold')) return false;
             return opt.filter(item);
         });
